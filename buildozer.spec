@@ -9,6 +9,7 @@ requirements = python3,kivy
 orientation = portrait
 fullscreen = 1
 android.accept_sdk_license = True
+p4a.branch = develop
 [buildozer]
 log_level = 2
 warn_on_root = 1
