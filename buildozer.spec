@@ -10,7 +10,7 @@ orientation = portrait
 fullscreen = 0
 android.permissions = INTERNET,ACCESS_NETWORK_STATE
 android.accept_sdk_license = True
-p4a.branch = develop
+p4a.branch = master
 
 [buildozer]
 log_level = 2
