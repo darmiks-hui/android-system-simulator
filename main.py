@@ -1,4 +1,3 @@
-
 from kivy.app import App
 from kivy.clock import Clock
 from kivy.core.window import Window
@@ -24,7 +23,7 @@ class SystemSimulator(App):
             spacing=20
         )
 
-        self.title = Label(
+        self.title_label = Label(
             text="[b]ANDROID SYSTEM v4.0[/b]",
             markup=True,
             font_size="25sp",
@@ -57,10 +56,9 @@ class SystemSimulator(App):
             height=45,
             background_color=(0.25, 0.25, 0.3, 1)
         )
-
         self.exit_button.bind(on_press=self.close_app)
 
-        self.root.add_widget(self.title)
+        self.root.add_widget(self.title_label)
         self.root.add_widget(self.status)
         self.root.add_widget(self.details)
         self.root.add_widget(self.bar)
@@ -77,19 +75,14 @@ class SystemSimulator(App):
 
         if self.progress == 20:
             self.details.text = "Checking system files..."
-
         elif self.progress == 45:
             self.details.text = "Loading system modules..."
-
         elif self.progress == 70:
             self.details.text = "Preparing restart..."
-
         elif self.progress >= 100:
             self.status.text = "SYSTEM RESTART"
             self.details.text = "Simulation complete."
-
             Clock.schedule_once(self.reset_system, 2)
-
             return False
 
     def reset_system(self, dt):
@@ -105,4 +98,3 @@ class SystemSimulator(App):
 
 if __name__ == "__main__":
     SystemSimulator().run()
-          
