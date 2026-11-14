@@ -14,6 +14,7 @@ TRANSLATIONS = {
         "lang_btn": "EN",
         "refresh": "ОБНОВИТЬ",
         "exit": "ВЫЙТИ",
+
         "section_device": "Устройство",
         "section_battery": "Батарея",
         "section_memory": "Память",
@@ -24,36 +25,48 @@ TRANSLATIONS = {
         "section_sensors": "Датчики",
         "section_modules": "Модули связи",
         "section_system": "Система",
+        "section_summary": "Итог диагностики",
+
         "manufacturer": "Производитель",
         "model": "Модель",
         "android_version": "Версия Android",
         "sdk": "SDK",
         "board": "Платформа",
         "fingerprint": "Сборка (fingerprint)",
+
         "battery_level": "Заряд",
         "battery_status": "Статус",
         "battery_temp": "Температура",
         "battery_health": "Состояние",
+
         "ram_total": "Всего RAM",
         "ram_free": "Свободно RAM",
+
         "storage_total": "Всего места",
         "storage_free": "Свободно места",
+
         "resolution": "Разрешение",
         "density": "Плотность",
         "refresh_rate": "Частота обновления",
         "orientation": "Ориентация",
+
         "network_type": "Тип подключения",
         "network_connected": "Подключено",
         "operator": "Оператор",
+
         "cpu_abi": "Архитектура",
         "cpu_cores": "Количество ядер",
+
         "sensors_list": "Доступные датчики",
+
         "bluetooth": "Bluetooth",
         "nfc": "NFC",
         "gps": "GPS",
+
         "uptime": "Время работы",
         "locale": "Язык системы",
         "timezone": "Часовой пояс",
+
         "yes": "Да",
         "no": "Нет",
         "na": "Недоступно",
@@ -64,12 +77,27 @@ TRANSLATIONS = {
         "good": "Хорошее",
         "portrait": "Портретная",
         "landscape": "Альбомная",
+
+        "verdict_battery_temp": "Температура батареи",
+        "verdict_battery_health": "Состояние батареи",
+        "verdict_storage": "Свободное место",
+        "verdict_network": "Подключение к сети",
+
+        "verdict_good": "Хорошо",
+        "verdict_warn": "Повышено",
+        "verdict_bad": "Критично",
+        "verdict_na": "Нет данных",
+        "verdict_storage_low": "Мало места",
+        "verdict_storage_critical": "Критически мало места",
+        "verdict_network_connected": "Подключено",
+        "verdict_network_disconnected": "Нет подключения",
     },
     "en": {
         "title": "DEVICE INFORMATION",
         "lang_btn": "RU",
         "refresh": "REFRESH",
         "exit": "EXIT",
+
         "section_device": "Device",
         "section_battery": "Battery",
         "section_memory": "Memory",
@@ -80,36 +108,48 @@ TRANSLATIONS = {
         "section_sensors": "Sensors",
         "section_modules": "Connectivity Modules",
         "section_system": "System",
+        "section_summary": "Diagnostic Summary",
+
         "manufacturer": "Manufacturer",
         "model": "Model",
         "android_version": "Android Version",
         "sdk": "SDK",
         "board": "Board",
         "fingerprint": "Build Fingerprint",
+
         "battery_level": "Level",
         "battery_status": "Status",
         "battery_temp": "Temperature",
         "battery_health": "Health",
+
         "ram_total": "Total RAM",
         "ram_free": "Free RAM",
+
         "storage_total": "Total Storage",
         "storage_free": "Free Storage",
+
         "resolution": "Resolution",
         "density": "Density",
         "refresh_rate": "Refresh Rate",
         "orientation": "Orientation",
+
         "network_type": "Connection Type",
         "network_connected": "Connected",
         "operator": "Carrier",
+
         "cpu_abi": "Architecture",
         "cpu_cores": "CPU Cores",
+
         "sensors_list": "Available Sensors",
+
         "bluetooth": "Bluetooth",
         "nfc": "NFC",
         "gps": "GPS",
+
         "uptime": "Uptime",
         "locale": "System Language",
         "timezone": "Timezone",
+
         "yes": "Yes",
         "no": "No",
         "na": "N/A",
@@ -120,6 +160,20 @@ TRANSLATIONS = {
         "good": "Good",
         "portrait": "Portrait",
         "landscape": "Landscape",
+
+        "verdict_battery_temp": "Battery Temperature",
+        "verdict_battery_health": "Battery Health",
+        "verdict_storage": "Free Storage",
+        "verdict_network": "Network Connection",
+
+        "verdict_good": "Good",
+        "verdict_warn": "Elevated",
+        "verdict_bad": "Critical",
+        "verdict_na": "No Data",
+        "verdict_storage_low": "Low Space",
+        "verdict_storage_critical": "Critically Low Space",
+        "verdict_network_connected": "Connected",
+        "verdict_network_disconnected": "Not Connected",
     },
 }
 
@@ -132,15 +186,24 @@ def get_android_info():
     data = {
         "manufacturer": None, "model": None, "android_version": None,
         "sdk": None, "board": None, "fingerprint": None,
+
         "battery_level": None, "battery_status": None,
         "battery_temp": None, "battery_health": None,
+
         "ram_total": None, "ram_free": None,
+
         "storage_total": None, "storage_free": None,
+
         "refresh_rate": None,
+
         "network_type": None, "network_connected": None, "operator": None,
+
         "cpu_abi": None, "cpu_cores": None,
+
         "sensors_list": None,
+
         "bluetooth": None, "nfc": None, "gps": None,
+
         "uptime": None, "locale": None, "timezone": None,
     }
 
@@ -159,192 +222,9 @@ def get_android_info():
         data["android_version"] = VERSION.RELEASE
         data["sdk"] = VERSION.SDK_INT
         data["board"] = Build.BOARD
-        data["fingerprint"] = Build.FINGERPRINT
+< truncated lines 225-464 >
 
-        try:
-            abis = Build.SUPPORTED_ABIS
-            data["cpu_abi"] = abis[0] if abis else None
-        except Exception:
-            data["cpu_abi"] = Build.CPU_ABI if hasattr(Build, "CPU_ABI") else None
-    except Exception:
-        pass
-
-    # --- Батарея ---
-    try:
-        from jnius import autoclass
-
-        PythonActivity = autoclass("org.kivy.android.PythonActivity")
-        Intent = autoclass("android.content.Intent")
-        IntentFilter = autoclass("android.content.IntentFilter")
-        BatteryManager = autoclass("android.os.BatteryManager")
-
-        activity = PythonActivity.mActivity
-        intent_filter = IntentFilter(Intent.ACTION_BATTERY_CHANGED)
-        battery_status = activity.registerReceiver(None, intent_filter)
-
-        level = battery_status.getIntExtra(BatteryManager.EXTRA_LEVEL, -1)
-        scale = battery_status.getIntExtra(BatteryManager.EXTRA_SCALE, -1)
-        if scale > 0:
-            data["battery_level"] = int(level / scale * 100)
-
-        status = battery_status.getIntExtra(BatteryManager.EXTRA_STATUS, -1)
-        status_map = {2: "charging", 3: "discharging", 5: "full"}
-        data["battery_status"] = status_map.get(status, "unknown")
-
-        temp = battery_status.getIntExtra(BatteryManager.EXTRA_TEMPERATURE, -1)
-        if temp >= 0:
-            data["battery_temp"] = round(temp / 10.0, 1)
-
-        health = battery_status.getIntExtra(BatteryManager.EXTRA_HEALTH, -1)
-        data["battery_health"] = "good" if health == 2 else "unknown"
-    except Exception:
-        pass
-
-    # --- Память ---
-    try:
-        from jnius import autoclass
-
-        PythonActivity = autoclass("org.kivy.android.PythonActivity")
-        Context = autoclass("android.content.Context")
-        ActivityManager = autoclass("android.app.ActivityManager")
-        MemoryInfo = autoclass("android.app.ActivityManager$MemoryInfo")
-
-        activity = PythonActivity.mActivity
-        am = activity.getSystemService(Context.ACTIVITY_SERVICE)
-        mem_info = MemoryInfo()
-        am.getMemoryInfo(mem_info)
-
-        data["ram_total"] = mem_info.totalMem / (1024 ** 3)
-        data["ram_free"] = mem_info.availMem / (1024 ** 3)
-    except Exception:
-        pass
-
-    # --- Хранилище ---
-    try:
-        from jnius import autoclass
-
-        StatFs = autoclass("android.os.StatFs")
-        Environment = autoclass("android.os.Environment")
-
-        path = Environment.getExternalStorageDirectory().getAbsolutePath()
-        stat = StatFs(path)
-        data["storage_total"] = stat.getTotalBytes() / (1024 ** 3)
-        data["storage_free"] = stat.getFreeBytes() / (1024 ** 3)
-    except Exception:
-        pass
-
-    # --- Сеть ---
-    try:
-        from jnius import autoclass
-
-        PythonActivity = autoclass("org.kivy.android.PythonActivity")
-        Context = autoclass("android.content.Context")
-        ConnectivityManager = autoclass("android.net.ConnectivityManager")
-
-        activity = PythonActivity.mActivity
-        cm = activity.getSystemService(Context.CONNECTIVITY_SERVICE)
-        active_network = cm.getActiveNetworkInfo()
-        if active_network is not None:
-            data["network_type"] = active_network.getTypeName()
-            data["network_connected"] = active_network.isConnected()
-        else:
-            data["network_connected"] = False
-    except Exception:
-        pass
-
-    try:
-        from jnius import autoclass
-
-        PythonActivity = autoclass("org.kivy.android.PythonActivity")
-        Context = autoclass("android.content.Context")
-        TelephonyManager = autoclass("android.telephony.TelephonyManager")
-
-        activity = PythonActivity.mActivity
-        tm = activity.getSystemService(Context.TELEPHONY_SERVICE)
-        operator_name = tm.getNetworkOperatorName()
-        data["operator"] = operator_name if operator_name else None
-    except Exception:
-        pass
-
-    # --- Процессор ---
-    try:
-        import os
-        data["cpu_cores"] = os.cpu_count()
-    except Exception:
-        pass
-
-    # --- Экран: частота обновления ---
-    try:
-        from jnius import autoclass
-
-        PythonActivity = autoclass("org.kivy.android.PythonActivity")
-        activity = PythonActivity.mActivity
-        window_manager = activity.getWindowManager()
-        display = window_manager.getDefaultDisplay()
-        data["refresh_rate"] = round(display.getRefreshRate(), 1)
-    except Exception:
-        pass
-
-    # --- Датчики ---
-    try:
-        from jnius import autoclass
-
-        PythonActivity = autoclass("org.kivy.android.PythonActivity")
-        Context = autoclass("android.content.Context")
-        SensorManager = autoclass("android.hardware.SensorManager")
-
-        activity = PythonActivity.mActivity
-        sm = activity.getSystemService(Context.SENSOR_SERVICE)
-        sensor_list = sm.getSensorList(-1)  # TYPE_ALL
-        data["sensors_list"] = sensor_list.size()
-    except Exception:
-        pass
-
-    # --- Bluetooth / NFC / GPS ---
-    try:
-        from jnius import autoclass
-
-        PythonActivity = autoclass("org.kivy.android.PythonActivity")
-        Context = autoclass("android.content.Context")
-        PackageManager = autoclass("android.content.pm.PackageManager")
-
-        activity = PythonActivity.mActivity
-        pm = activity.getPackageManager()
-
-        data["bluetooth"] = pm.hasSystemFeature(PackageManager.FEATURE_BLUETOOTH)
-        data["nfc"] = pm.hasSystemFeature(PackageManager.FEATURE_NFC)
-        data["gps"] = pm.hasSystemFeature(PackageManager.FEATURE_LOCATION_GPS)
-    except Exception:
-        pass
-
-    # --- Аптайм ---
-    try:
-        from jnius import autoclass
-
-        SystemClock = autoclass("android.os.SystemClock")
-        millis = SystemClock.elapsedRealtime()
-        total_seconds = int(millis / 1000)
-        hours = total_seconds // 3600
-        minutes = (total_seconds % 3600) // 60
-        data["uptime"] = f"{hours}h {minutes}m"
-    except Exception:
-        pass
-
-    # --- Локаль и часовой пояс ---
-    try:
-        from jnius import autoclass
-
-        Locale = autoclass("java.util.Locale")
-        current = Locale.getDefault()
-        data["locale"] = current.toString()
-
-        TimeZone = autoclass("java.util.TimeZone")
-        tz = TimeZone.getDefault()
-        data["timezone"] = tz.getID()
-    except Exception:
-        pass
-
-    return data
+    return verdicts
 
 
 class DeviceInfoApp(App):
@@ -437,6 +317,31 @@ class DeviceInfoApp(App):
             return self.t("na")
         return f"{value}{suffix}"
 
+    def _verdict_row(self, label_key, status, detail_key):
+        colors = {
+            "good": (0.2, 0.85, 0.3, 1),
+            "warn": (0.95, 0.7, 0.1, 1),
+            "bad": (0.95, 0.2, 0.2, 1),
+            "na": (0.6, 0.6, 0.6, 1),
+        }
+        status_text = detail_key and self.t(detail_key) or self.t(f"verdict_{status}")
+
+        row = GridLayout(cols=2, size_hint_y=None, height=26)
+        left = Label(
+            text=self.t(label_key), font_size="12sp", color=(0.85, 0.85, 0.9, 1),
+            halign="left", valign="middle"
+        )
+        left.bind(size=self._update_text_size)
+        right = Label(
+            text=status_text, font_size="12sp", bold=True,
+            color=colors.get(status, (0.9, 0.9, 0.9, 1)),
+            halign="right", valign="middle"
+        )
+        right.bind(size=self._update_text_size)
+        row.add_widget(left)
+        row.add_widget(right)
+        return row
+
     def refresh_data(self):
         data = get_android_info()
 
@@ -447,6 +352,12 @@ class DeviceInfoApp(App):
 
         self.grid.clear_widgets()
 
+        # Итог диагностики — в самом верху, чтобы было видно сразу
+        self.grid.add_widget(self._section_header(self.t("section_summary")))
+        for label_key, status, detail_key in build_verdicts(data):
+            self.grid.add_widget(self._verdict_row(label_key, status, detail_key))
+
+        # Устройство
         self.grid.add_widget(self._section_header(self.t("section_device")))
         self.grid.add_widget(self._row(self.t("manufacturer"), self._fmt(data["manufacturer"])))
         self.grid.add_widget(self._row(self.t("model"), self._fmt(data["model"])))
@@ -457,10 +368,12 @@ class DeviceInfoApp(App):
         fp_short = (fp[:40] + "...") if fp and len(fp) > 40 else self._fmt(fp)
         self.grid.add_widget(self._row(self.t("fingerprint"), fp_short))
 
+        # Процессор
         self.grid.add_widget(self._section_header(self.t("section_cpu")))
         self.grid.add_widget(self._row(self.t("cpu_abi"), self._fmt(data["cpu_abi"])))
         self.grid.add_widget(self._row(self.t("cpu_cores"), self._fmt(data["cpu_cores"])))
 
+        # Батарея
         self.grid.add_widget(self._section_header(self.t("section_battery")))
         self.grid.add_widget(self._row(self.t("battery_level"), self._fmt(data["battery_level"], "%")))
         status_key = data["battery_status"]
@@ -471,6 +384,7 @@ class DeviceInfoApp(App):
         health_text = self.t(health_key) if health_key else self.t("na")
         self.grid.add_widget(self._row(self.t("battery_health"), health_text))
 
+        # Память
         self.grid.add_widget(self._section_header(self.t("section_memory")))
         ram_total = data["ram_total"]
         ram_free = data["ram_free"]
@@ -483,6 +397,7 @@ class DeviceInfoApp(App):
             f"{ram_free:.2f} GB" if ram_free is not None else self.t("na")
         ))
 
+        # Хранилище
         self.grid.add_widget(self._section_header(self.t("section_storage")))
         st_total = data["storage_total"]
         st_free = data["storage_free"]
@@ -495,6 +410,7 @@ class DeviceInfoApp(App):
             f"{st_free:.2f} GB" if st_free is not None else self.t("na")
         ))
 
+        # Экран
         self.grid.add_widget(self._section_header(self.t("section_display")))
         self.grid.add_widget(self._row(self.t("resolution"), f"{Window.width} x {Window.height}"))
         self.grid.add_widget(self._row(self.t("density"), f"{Window.dpi:.0f} dpi"))
@@ -502,19 +418,23 @@ class DeviceInfoApp(App):
         orient_key = "landscape" if Window.width > Window.height else "portrait"
         self.grid.add_widget(self._row(self.t("orientation"), self.t(orient_key)))
 
+        # Сеть
         self.grid.add_widget(self._section_header(self.t("section_network")))
         self.grid.add_widget(self._row(self.t("network_type"), self._fmt(data["network_type"])))
         self.grid.add_widget(self._row(self.t("network_connected"), self._fmt_bool(data["network_connected"])))
         self.grid.add_widget(self._row(self.t("operator"), self._fmt(data["operator"])))
 
+        # Модули связи
         self.grid.add_widget(self._section_header(self.t("section_modules")))
         self.grid.add_widget(self._row(self.t("bluetooth"), self._fmt_bool(data["bluetooth"])))
         self.grid.add_widget(self._row(self.t("nfc"), self._fmt_bool(data["nfc"])))
         self.grid.add_widget(self._row(self.t("gps"), self._fmt_bool(data["gps"])))
 
+        # Датчики
         self.grid.add_widget(self._section_header(self.t("section_sensors")))
         self.grid.add_widget(self._row(self.t("sensors_list"), self._fmt(data["sensors_list"])))
 
+        # Система
         self.grid.add_widget(self._section_header(self.t("section_system")))
         self.grid.add_widget(self._row(self.t("uptime"), self._fmt(data["uptime"])))
         self.grid.add_widget(self._row(self.t("locale"), self._fmt(data["locale"])))
