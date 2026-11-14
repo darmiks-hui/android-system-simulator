@@ -7,7 +7,7 @@ source.include_exts = py,png,jpg,kv
 version = 1.0
 requirements = python3,kivy
 orientation = portrait
-fullscreen = 1
+fullscreen = 0
 android.accept_sdk_license = True
 p4a.branch = develop
 [buildozer]
