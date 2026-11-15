@@ -10,9 +10,9 @@ from kivy.utils import platform
 
 TRANSLATIONS = {
     "ru": {
-        "title": "ИНФОРМАЦИЯ ОБ УСТРОЙСТВЕ",
+        "title": "УСТРОЙСТВО",
         "lang_btn": "EN",
-        "refresh": "ОБНОВИТЬ",
+        "refresh": "Обн.",
         "exit": "ВЫЙТИ",
 
         "section_device": "Устройство",
@@ -93,9 +93,9 @@ TRANSLATIONS = {
         "verdict_network_disconnected": "Нет подключения",
     },
     "en": {
-        "title": "DEVICE INFORMATION",
+        "title": "DEVICE INFO",
         "lang_btn": "RU",
-        "refresh": "REFRESH",
+        "refresh": "Refr.",
         "exit": "EXIT",
 
         "section_device": "Device",
@@ -474,18 +474,18 @@ class DeviceInfoApp(App):
 
         self.root_layout = BoxLayout(orientation="vertical", padding=15, spacing=10)
 
-        top_bar = BoxLayout(size_hint_y=None, height=50, spacing=10)
+        top_bar = BoxLayout(size_hint_y=None, height=64, spacing=18, padding=(4, 6))
         self.title_label = Label(
-            text="", markup=True, font_size="18sp",
+            text="", markup=True, font_size="20sp",
             color=(0.2, 0.8, 1, 1), halign="left", valign="middle"
         )
         self.title_label.bind(size=self._update_text_size)
 
-        self.lang_button = Button(size_hint_x=None, width=70)
-        self.lang_button.bind(on_press=self.toggle_language)
-
-        self.refresh_button = Button(size_hint_x=None, width=110)
+        self.refresh_button = Button(size_hint_x=None, width=90, font_size="14sp")
         self.refresh_button.bind(on_press=lambda *_: self.refresh_data())
+
+        self.lang_button = Button(size_hint_x=None, width=70, font_size="14sp")
+        self.lang_button.bind(on_press=self.toggle_language)
 
         top_bar.add_widget(self.title_label)
         top_bar.add_widget(self.refresh_button)
@@ -507,7 +507,7 @@ class DeviceInfoApp(App):
         self.root_layout.add_widget(self.exit_button)
 
         self.refresh_data()
-        Clock.schedule_interval(lambda dt: self.refresh_data(), 5)
+        Clock.schedule_interval(lambda dt: self.refresh_data(), 20)
 
         return self.root_layout
 
@@ -523,22 +523,22 @@ class DeviceInfoApp(App):
 
     def _section_header(self, text):
         lbl = Label(
-            text=f"[b]{text}[/b]", markup=True, font_size="15sp",
-            color=(1, 0.2, 0.2, 1), size_hint_y=None, height=28,
+            text=f"[b]{text}[/b]", markup=True, font_size="18sp",
+            color=(1, 0.3, 0.3, 1), size_hint_y=None, height=40,
             halign="left", valign="middle"
         )
         lbl.bind(size=self._update_text_size)
         return lbl
 
     def _row(self, label_text, value_text):
-        row = GridLayout(cols=2, size_hint_y=None, height=26)
+        row = GridLayout(cols=2, size_hint_y=None, height=34, spacing=8)
         left = Label(
-            text=label_text, font_size="12sp", color=(0.7, 0.7, 0.7, 1),
+            text=label_text, font_size="15sp", color=(0.75, 0.75, 0.78, 1),
             halign="left", valign="middle"
         )
         left.bind(size=self._update_text_size)
         right = Label(
-            text=str(value_text), font_size="12sp", color=(0.9, 0.9, 0.95, 1),
+            text=str(value_text), font_size="15sp", color=(0.95, 0.95, 1, 1),
             halign="right", valign="middle"
         )
         right.bind(size=self._update_text_size)
@@ -565,14 +565,14 @@ class DeviceInfoApp(App):
         }
         status_text = detail_key and self.t(detail_key) or self.t(f"verdict_{status}")
 
-        row = GridLayout(cols=2, size_hint_y=None, height=26)
+        row = GridLayout(cols=2, size_hint_y=None, height=34, spacing=8)
         left = Label(
-            text=self.t(label_key), font_size="12sp", color=(0.85, 0.85, 0.9, 1),
+            text=self.t(label_key), font_size="15sp", color=(0.85, 0.85, 0.9, 1),
             halign="left", valign="middle"
         )
         left.bind(size=self._update_text_size)
         right = Label(
-            text=status_text, font_size="12sp", bold=True,
+            text=status_text, font_size="15sp", bold=True,
             color=colors.get(status, (0.9, 0.9, 0.9, 1)),
             halign="right", valign="middle"
         )
@@ -597,14 +597,13 @@ class DeviceInfoApp(App):
             self.grid.add_widget(self._verdict_row(label_key, status, detail_key))
 
         # Устройство
-        self.grid.add_widget(self._section_header(self.t("section_device")))
         self.grid.add_widget(self._row(self.t("manufacturer"), self._fmt(data["manufacturer"])))
         self.grid.add_widget(self._row(self.t("model"), self._fmt(data["model"])))
         self.grid.add_widget(self._row(self.t("android_version"), self._fmt(data["android_version"])))
         self.grid.add_widget(self._row(self.t("sdk"), self._fmt(data["sdk"])))
         self.grid.add_widget(self._row(self.t("board"), self._fmt(data["board"])))
         fp = data["fingerprint"]
-        fp_short = (fp[:40] + "...") if fp and len(fp) > 40 else self._fmt(fp)
+        fp_short = (fp[:22] + "...") if fp and len(fp) > 22 else self._fmt(fp)
         self.grid.add_widget(self._row(self.t("fingerprint"), fp_short))
 
         # Процессор
