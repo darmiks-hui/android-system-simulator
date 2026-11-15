@@ -599,4 +599,89 @@ class DeviceInfoApp(App):
         # Устройство
         self.grid.add_widget(self._section_header(self.t("section_device")))
         self.grid.add_widget(self._row(self.t("manufacturer"), self._fmt(data["manufacturer"])))
-        self
+        self.grid.add_widget(self._row(self.t("model"), self._fmt(data["model"])))
+        self.grid.add_widget(self._row(self.t("android_version"), self._fmt(data["android_version"])))
+        self.grid.add_widget(self._row(self.t("sdk"), self._fmt(data["sdk"])))
+        self.grid.add_widget(self._row(self.t("board"), self._fmt(data["board"])))
+        fp = data["fingerprint"]
+        fp_short = (fp[:40] + "...") if fp and len(fp) > 40 else self._fmt(fp)
+        self.grid.add_widget(self._row(self.t("fingerprint"), fp_short))
+
+        # Процессор
+        self.grid.add_widget(self._section_header(self.t("section_cpu")))
+        self.grid.add_widget(self._row(self.t("cpu_abi"), self._fmt(data["cpu_abi"])))
+        self.grid.add_widget(self._row(self.t("cpu_cores"), self._fmt(data["cpu_cores"])))
+
+        # Батарея
+        self.grid.add_widget(self._section_header(self.t("section_battery")))
+        self.grid.add_widget(self._row(self.t("battery_level"), self._fmt(data["battery_level"], "%")))
+        status_key = data["battery_status"]
+        status_text = self.t(status_key) if status_key else self.t("na")
+        self.grid.add_widget(self._row(self.t("battery_status"), status_text))
+        self.grid.add_widget(self._row(self.t("battery_temp"), self._fmt(data["battery_temp"], " °C")))
+        health_key = data["battery_health"]
+        health_text = self.t(health_key) if health_key else self.t("na")
+        self.grid.add_widget(self._row(self.t("battery_health"), health_text))
+
+        # Память
+        self.grid.add_widget(self._section_header(self.t("section_memory")))
+        ram_total = data["ram_total"]
+        ram_free = data["ram_free"]
+        self.grid.add_widget(self._row(
+            self.t("ram_total"),
+            f"{ram_total:.2f} GB" if ram_total is not None else self.t("na")
+        ))
+        self.grid.add_widget(self._row(
+            self.t("ram_free"),
+            f"{ram_free:.2f} GB" if ram_free is not None else self.t("na")
+        ))
+
+        # Хранилище
+        self.grid.add_widget(self._section_header(self.t("section_storage")))
+        st_total = data["storage_total"]
+        st_free = data["storage_free"]
+        self.grid.add_widget(self._row(
+            self.t("storage_total"),
+            f"{st_total:.2f} GB" if st_total is not None else self.t("na")
+        ))
+        self.grid.add_widget(self._row(
+            self.t("storage_free"),
+            f"{st_free:.2f} GB" if st_free is not None else self.t("na")
+        ))
+
+        # Экран
+        self.grid.add_widget(self._section_header(self.t("section_display")))
+        self.grid.add_widget(self._row(self.t("resolution"), f"{Window.width} x {Window.height}"))
+        self.grid.add_widget(self._row(self.t("density"), f"{Window.dpi:.0f} dpi"))
+        self.grid.add_widget(self._row(self.t("refresh_rate"), self._fmt(data["refresh_rate"], " Hz")))
+        orient_key = "landscape" if Window.width > Window.height else "portrait"
+        self.grid.add_widget(self._row(self.t("orientation"), self.t(orient_key)))
+
+        # Сеть
+        self.grid.add_widget(self._section_header(self.t("section_network")))
+        self.grid.add_widget(self._row(self.t("network_type"), self._fmt(data["network_type"])))
+        self.grid.add_widget(self._row(self.t("network_connected"), self._fmt_bool(data["network_connected"])))
+        self.grid.add_widget(self._row(self.t("operator"), self._fmt(data["operator"])))
+
+        # Модули связи
+        self.grid.add_widget(self._section_header(self.t("section_modules")))
+        self.grid.add_widget(self._row(self.t("bluetooth"), self._fmt_bool(data["bluetooth"])))
+        self.grid.add_widget(self._row(self.t("nfc"), self._fmt_bool(data["nfc"])))
+        self.grid.add_widget(self._row(self.t("gps"), self._fmt_bool(data["gps"])))
+
+        # Датчики
+        self.grid.add_widget(self._section_header(self.t("section_sensors")))
+        self.grid.add_widget(self._row(self.t("sensors_list"), self._fmt(data["sensors_list"])))
+
+        # Система
+        self.grid.add_widget(self._section_header(self.t("section_system")))
+        self.grid.add_widget(self._row(self.t("uptime"), self._fmt(data["uptime"])))
+        self.grid.add_widget(self._row(self.t("locale"), self._fmt(data["locale"])))
+        self.grid.add_widget(self._row(self.t("timezone"), self._fmt(data["timezone"])))
+
+    def close_app(self, instance):
+        App.get_running_app().stop()
+
+
+if __name__ == "__main__":
+    DeviceInfoApp().run()
